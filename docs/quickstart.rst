@@ -1,9 +1,14 @@
-===========
-Quick Start
-===========
+=================
+Quick Start Guide
+=================
 
 Create a new chat bot
 =====================
+
+.. note::
+
+   If you are using Python 2.7, be sure that the unicode header is the first line of
+   your Python file: :code:`# -*- coding: utf-8 -*-`
 
 .. code-block:: python
 
@@ -13,7 +18,7 @@ Create a new chat bot
 .. note::
 
    The only required parameter for the `ChatBot` is a name.
-   This can be any anything you want.
+   This can be anything you want.
 
 Training
 ========
@@ -30,7 +35,7 @@ Additional notes on training can be found in the :ref:`Training <set_trainer>` d
 
 .. code-block:: python
 
-   from chatterbot.training.trainers import ListTrainer
+   from chatterbot.trainers import ListTrainer
 
    conversation = [
        "Hello",

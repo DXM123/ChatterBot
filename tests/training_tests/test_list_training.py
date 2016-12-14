@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from tests.base_case import ChatBotTestCase
-from chatterbot.training.trainers import ListTrainer
+from chatterbot.trainers import ListTrainer
 
 
 class ListTrainingTests(ChatBotTestCase):
@@ -31,7 +31,7 @@ class ListTrainingTests(ChatBotTestCase):
 
         response = self.chatbot.get_response("Thank you.")
 
-        self.assertEqual(response, "You are welcome.")
+        self.assertEqual(response.text, "You are welcome.")
 
     def test_training_increments_occurrence_count(self):
 
@@ -76,7 +76,7 @@ class ListTrainingTests(ChatBotTestCase):
         # There should be a total of 9 statements in the database after training
         self.assertEqual(self.chatbot.storage.count(), 9)
 
-        # The first statement should be in responce to another statement yet
+        # The first statement should be in response to another statement
         self.assertEqual(
             len(self.chatbot.storage.find(conversation[0]).in_response_to),
             0
@@ -100,13 +100,13 @@ class ListTrainingTests(ChatBotTestCase):
         to the database.
         """
         conversation = [
-            u"¶ ∑ ∞ ∫ π ∈ ℝ² ∖ ⩆ ⩇ ⩈ ⩉ ⩊ ⩋ ⪽ ⪾ ⪿ ⫀ ⫁ ⫂ ⋒ ⋓",
-            u"⊂ ⊃ ⊆ ⊇ ⊈ ⊉ ⊊ ⊋ ⊄ ⊅ ⫅ ⫆ ⫋ ⫌ ⫃ ⫄ ⫇ ⫈ ⫉ ⫊ ⟃ ⟄",
-            u"∠ ∡ ⦛ ⦞ ⦟ ⦢ ⦣ ⦤ ⦥ ⦦ ⦧ ⦨ ⦩ ⦪ ⦫ ⦬ ⦭ ⦮ ⦯ ⦓ ⦔ ⦕ ⦖ ⟀",
-            u"∫ ∬ ∭ ∮ ∯ ∰ ∱ ∲ ∳ ⨋ ⨌ ⨍ ⨎ ⨏ ⨐ ⨑ ⨒ ⨓ ⨔ ⨕ ⨖ ⨗ ⨘ ⨙ ⨚ ⨛ ⨜",
-            u"≁ ≂ ≃ ≄ ⋍ ≅ ≆ ≇ ≈ ≉ ≊ ≋ ≌ ⩯ ⩰ ⫏ ⫐ ⫑ ⫒ ⫓ ⫔ ⫕ ⫖",
-            u"¬ ⫬ ⫭ ⊨ ⊭ ∀ ∁ ∃ ∄ ∴ ∵ ⊦ ⊬ ⊧ ⊩ ⊮ ⊫ ⊯ ⊪ ⊰ ⊱ ⫗ ⫘",
-            u"∧ ∨ ⊻ ⊼ ⊽ ⋎ ⋏ ⟑ ⟇ ⩑ ⩒ ⩓ ⩔ ⩕ ⩖ ⩗ ⩘ ⩙ ⩚ ⩛ ⩜ ⩝ ⩞ ⩟ ⩠ ⩢",
+            u'¶ ∑ ∞ ∫ π ∈ ℝ² ∖ ⩆ ⩇ ⩈ ⩉ ⩊ ⩋ ⪽ ⪾ ⪿ ⫀ ⫁ ⫂ ⋒ ⋓',
+            u'⊂ ⊃ ⊆ ⊇ ⊈ ⊉ ⊊ ⊋ ⊄ ⊅ ⫅ ⫆ ⫋ ⫌ ⫃ ⫄ ⫇ ⫈ ⫉ ⫊ ⟃ ⟄',
+            u'∠ ∡ ⦛ ⦞ ⦟ ⦢ ⦣ ⦤ ⦥ ⦦ ⦧ ⦨ ⦩ ⦪ ⦫ ⦬ ⦭ ⦮ ⦯ ⦓ ⦔ ⦕ ⦖ ⟀',
+            u'∫ ∬ ∭ ∮ ∯ ∰ ∱ ∲ ∳ ⨋ ⨌ ⨍ ⨎ ⨏ ⨐ ⨑ ⨒ ⨓ ⨔ ⨕ ⨖ ⨗ ⨘ ⨙ ⨚ ⨛ ⨜',
+            u'≁ ≂ ≃ ≄ ⋍ ≅ ≆ ≇ ≈ ≉ ≊ ≋ ≌ ⩯ ⩰ ⫏ ⫐ ⫑ ⫒ ⫓ ⫔ ⫕ ⫖',
+            u'¬ ⫬ ⫭ ⊨ ⊭ ∀ ∁ ∃ ∄ ∴ ∵ ⊦ ⊬ ⊧ ⊩ ⊮ ⊫ ⊯ ⊪ ⊰ ⊱ ⫗ ⫘',
+            u'∧ ∨ ⊻ ⊼ ⊽ ⋎ ⋏ ⟑ ⟇ ⩑ ⩒ ⩓ ⩔ ⩕ ⩖ ⩗ ⩘ ⩙ ⩚ ⩛ ⩜ ⩝ ⩞ ⩟ ⩠ ⩢',
         ]
 
         self.chatbot.train(conversation)
@@ -117,8 +117,9 @@ class ListTrainingTests(ChatBotTestCase):
 
     def test_similar_sentence_gets_same_response_multiple_times(self):
         """
-        Tests if the bot returns the same response for the same question (which
-        is similar to the one present in the training set) when asked repeatedly.
+        Tests if the bot returns the same response for the same
+        question (which is similar to the one present in the training set)
+        when asked repeatedly.
         """
         training = [
             'how do you login to gmail?',
@@ -130,11 +131,11 @@ class ListTrainingTests(ChatBotTestCase):
         self.chatbot.train(training)
 
         response_to_trained_set = self.chatbot.get_response('how do you login to gmail?')
-        response_to_similar_question_1 = self.chatbot.get_response(similar_question)
-        response_to_similar_question_2 = self.chatbot.get_response(similar_question)
+        response1 = self.chatbot.get_response(similar_question)
+        response2 = self.chatbot.get_response(similar_question)
 
-        self.assertEqual(response_to_trained_set, response_to_similar_question_1)
-        self.assertEqual(response_to_similar_question_1, response_to_similar_question_2)
+        self.assertEqual(response_to_trained_set, response1)
+        self.assertEqual(response1, response2)
 
 
 class ChatterBotResponseTests(ChatBotTestCase):
@@ -177,14 +178,14 @@ class ChatterBotResponseTests(ChatBotTestCase):
         input_text = "What... is your favourite colour?"
         response = self.chatbot.get_response(input_text)
 
-        self.assertIn("Blue", response)
+        self.assertIn("Blue", response.text)
 
     def test_answer_close_to_known_input(self):
 
         input_text = "What is your favourite colour?"
         response = self.chatbot.get_response(input_text)
 
-        self.assertIn("Blue", response)
+        self.assertIn("Blue", response.text)
 
     def test_match_has_no_response(self):
         """
@@ -195,13 +196,13 @@ class ChatterBotResponseTests(ChatBotTestCase):
         input_text = "Siri is my cat"
         response = self.chatbot.get_response(input_text)
 
-        self.assertGreater(len(response), 0)
+        self.assertGreater(len(response.text), 0)
 
     def test_empty_input(self):
         """
         If empty input is provided, anything may be returned.
         """
-        output = self.chatbot.get_response("")
+        response = self.chatbot.get_response("")
 
-        self.assertTrue(len(output) >= 0)
+        self.assertTrue(len(response.text) >= 0)
 

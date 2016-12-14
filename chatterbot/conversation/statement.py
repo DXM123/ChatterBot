@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+from .response import Response
+
+
 class Statement(object):
     """
     A statement represents a single spoken entity, sentence or
@@ -6,20 +10,17 @@ class Statement(object):
 
     def __init__(self, text, **kwargs):
         self.text = text
-        self.in_response_to = kwargs.get("in_response_to", [])
-
-        self.extra_data = {}
-
-        if "in_response_to" in kwargs:
-            del(kwargs["in_response_to"])
-
-        self.extra_data.update(kwargs)
+        self.in_response_to = kwargs.pop('in_response_to', [])
+        self.extra_data = kwargs.pop('extra_data', {})
 
     def __str__(self):
         return self.text
 
     def __repr__(self):
-        return "<Statement text:%s>" % (self.text)
+        return '<Statement text:%s>' % (self.text)
+
+    def __hash__(self):
+        return hash(self.text)
 
     def __eq__(self, other):
         if not other:
@@ -32,15 +33,38 @@ class Statement(object):
 
     def add_extra_data(self, key, value):
         """
-        This method allows additional data to be stored on the
-        statement object.
+        This method allows additional data to be stored on the statement object.
+
+        Typically this data is something that pertains just to this statement.
+        For example, a value stored here might be the tagged parts of speech for
+        each word in the statement text.
+
+            - key = 'pos_tags'
+            - value = [('Now', 'RB'), ('for', 'IN'), ('something', 'NN'), ('different', 'JJ')]
+
+        :param key: The key to use in the dictionary of extra data.
+        :type key: str
+
+        :param value: The value to set for the specified key.
         """
         self.extra_data[key] = value
 
     def add_response(self, response):
         """
-        Add the response to the list if it does not already exist.
+        Add the response to the list of statements that this statement is in response to.
+        If the response is already in the list, increment the occurrence count of that response.
+
+        :param response: The response to add.
+        :type response: chatterbot.conversation.response.Response
         """
+        if not isinstance(response, Response):
+            raise Statement.InvalidTypeException(
+                'A {} was recieved when a {} instance was expected'.format(
+                    type(response),
+                    type(Response(''))
+                )
+            )
+
         updated = False
         for index in range(0, len(self.in_response_to)):
             if response.text == self.in_response_to[index].text:
@@ -54,6 +78,9 @@ class Statement(object):
         """
         Removes a response from the statement's response list based
         on the value of the response text.
+
+        :param response_text: The text of the response to be removed.
+        :type response_text: str
         """
         for response in self.in_response_to:
             if response_text == response.text:
@@ -63,7 +90,14 @@ class Statement(object):
 
     def get_response_count(self, statement):
         """
-        Return the number of times the statement occurs in the database.
+        Find the number of times that the statement has been used
+        as a response to the current statement.
+
+        :param statement: The statement object to get the count for.
+        :type statement: chatterbot.conversation.statement.Statement
+
+        :returns: Return the number of times the statement has been used as a response.
+        :rtype: int
         """
         for response in self.in_response_to:
             if statement.text == response.text:
@@ -73,48 +107,24 @@ class Statement(object):
 
     def serialize(self):
         """
-        Returns a dictionary representation of the current object.
+        :returns: A dictionary representation of the statement object.
+        :rtype: dict
         """
         data = {}
 
-        data["text"] = self.text
-        data["in_response_to"] = []
-        data.update(self.extra_data)
+        data['text'] = self.text
+        data['in_response_to'] = []
+        data['extra_data'] = self.extra_data
 
         for response in self.in_response_to:
-            data["in_response_to"].append(response.serialize())
+            data['in_response_to'].append(response.serialize())
 
         return data
 
+    class InvalidTypeException(Exception):
 
-class Response(object):
-    """
-    A response represents an entity which response to a statement.
-    """
+        def __init__(self, value='Recieved an unexpected value type.'):
+            self.value = value
 
-    def __init__(self, text, **kwargs):
-        self.text = text
-        self.occurrence = kwargs.get("occurrence", 1)
-
-    def __str__(self):
-        return self.text
-
-    def __repr__(self):
-        return "<Response text:%s>" % (self.text)
-
-    def __eq__(self, other):
-        if not other:
-            return False
-
-        if isinstance(other, Response):
-            return self.text == other.text
-
-        return self.text == other
-
-    def serialize(self):
-        data = {}
-
-        data["text"] = self.text
-        data["occurrence"] = self.occurrence
-
-        return data
+        def __str__(self):
+            return repr(self.value)

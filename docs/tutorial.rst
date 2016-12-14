@@ -2,16 +2,6 @@
 ChatterBot Tutorial
 ===================
 
-Installing ChatterBot
-=====================
-
-The recommended method for installing ChatterBot is by using `pip`_.
-To install ChatterBot using pip run the following command in your terminal.
-
-.. code-block:: bash
-
-   pip install chatterbot
-
 Creating your first chat bot
 ============================
 
@@ -40,17 +30,17 @@ Storage adapter
 
 ChatterBot comes with built in adapter classes that allow it to connect
 to different types of databases. In this tutorial, we will be using the
-`JsonDatabaseAdapter` which is a simple storage adapter that stores data
+`JsonFileStorageAdapter` which is a simple storage adapter that stores data
 in a json formatted file on your hard disk. This functionality makes
 this storage adapter very good for testing and debugging.
 
 .. warning::
 
-   The JsonDatabaseAdapter is not intended for use with large amounts of
+   The JsonFileStorageAdapter is not intended for use with large amounts of
    data. You may expirience serious performance problems if the size of
    this database becomes too large.
 
-We will select the `JsonDatabaseAdapter` by specifying it in our chat
+We will select the `JsonFileStorageAdapter` by specifying it in our chat
 bot's constructor.
 
 The `database` parameter is used to specify the path to the database
@@ -61,14 +51,14 @@ if it does not already exist.
 .. code-block:: python
 
    bot = ChatBot(
-       "Norman"
-       storage_adapter="chatterbot.adapters.storage.JsonDatabaseAdapter",
+       "Norman",
+       storage_adapter="chatterbot.storage.JsonFileStorageAdapter",
        database="./database.json"
    )
 
 .. note::
 
-   The JsonDatabaseAdapter is ChatterBot's default adapter.
+   The JsonFileStorageAdapter is ChatterBot's default adapter.
    If you do not specify an adapter in your constructor,
    the JsonDatabase adapter will be used automatically.
 
@@ -82,10 +72,10 @@ the terminal. The output terminal adapter print's the chat bot's response.
 .. code-block:: python
 
    bot = ChatBot(
-       "Norman"
-       storage_adapter="chatterbot.adapters.storage.JsonDatabaseAdapter",
-       input_adapter="chatterbot.adapters.input.TerminalAdapter",
-       output_adapter="chatterbot.adapters.output.TerminalAdapter",
+       "Norman",
+       storage_adapter="chatterbot.storage.JsonFileStorageAdapter",
+       input_adapter="chatterbot.input.TerminalAdapter",
+       output_adapter="chatterbot.output.TerminalAdapter",
        database="./database.json"
    )
 
@@ -105,13 +95,13 @@ operations.
 .. code-block:: python
 
    bot = ChatBot(
-       "Norman"
-       storage_adapter="chatterbot.adapters.storage.JsonDatabaseAdapter",
-       input_adapter="chatterbot.adapters.input.TerminalAdapter",
-       output_adapter="chatterbot.adapters.output.TerminalAdapter",
+       "Norman",
+       storage_adapter="chatterbot.storage.JsonFileStorageAdapter",
+       input_adapter="chatterbot.input.TerminalAdapter",
+       output_adapter="chatterbot.output.TerminalAdapter",
        logic_adapters=[
-           "chatterbot.adapters.logic.MathematicalEvaluation",
-           "chatterbot.adapters.logic.TimeLogicAdapter"
+           "chatterbot.logic.MathematicalEvaluation",
+           "chatterbot.logic.TimeLogicAdapter"
        ],
        database="./database.json"
    )
@@ -136,5 +126,3 @@ This concludes this ChatterBot tutorial. Please see other sections of the
 documentation for more details and examples.
 
 Next: See :doc:`./examples`
-
-.. _pip: https://pip.pypa.io/en/stable/installing/
